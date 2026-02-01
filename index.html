@@ -75,7 +75,7 @@
     .msg{margin-top:14px;min-height:22px;font-weight:700;}
     .hint{margin-top:6px;font-size:13px;opacity:.65;}
 
-    /* YES fullscreen – mobile first */
+    /* YES fullscreen */
     #yesBtn.fullscreen{
       position:fixed;
       inset:0;
@@ -97,32 +97,35 @@
       font-size:clamp(14px,4vw,18px);
       opacity:.85;
       font-weight:500;
+      padding: 0 14px;
+      text-align:center;
     }
 
-    /* Overlay */
+    /* Scene overlay */
     .overlay{
       position:fixed;
       inset:0;
       display:none;
       place-items:center;
-      background:rgba(255,240,246,.82);
+      background:rgba(255,240,246,.86);
       backdrop-filter:blur(6px);
       z-index:100000;
+      padding: 16px;
     }
     .overlay.show{display:grid;}
 
     .overlay-card{
+      width:min(680px,calc(100vw - 28px));
       background:rgba(255,255,255,.92);
       border-radius:26px;
       padding:22px 20px;
       text-align:center;
       box-shadow:0 18px 70px rgba(0,0,0,.16);
-      max-width:680px;
     }
 
     .love{
       font-weight:900;
-      font-size:clamp(36px,7vw,64px);
+      font-size:clamp(30px,6vw,56px);
       margin:6px 0 10px;
     }
 
@@ -130,18 +133,33 @@
       border-radius:18px;
       overflow:hidden;
       margin:14px 0;
+      background: rgba(255,227,236,.55);
+      box-shadow: 0 16px 50px rgba(0,0,0,.12);
     }
 
     .gif-wrap img{
       width:min(520px,92vw);
       display:block;
+      height:auto;
     }
 
     .after-text{
       margin-top:10px;
       font-size:18px;
       font-weight:600;
-      opacity:.9;
+      opacity:.92;
+      line-height: 1.35;
+    }
+
+    .next-btn{
+      position:static;
+      margin-top: 14px;
+      background:#ff3b7a;
+      color:#fff;
+      font-size:16px;
+      padding:12px 16px;
+      border-radius:14px;
+      box-shadow:0 10px 24px rgba(0,0,0,.12);
     }
   </style>
 </head>
@@ -149,7 +167,7 @@
 <body>
   <div class="card" id="card">
     <h1 id="headline"></h1>
-    <p>I made this just for you 💗</p>
+    <p id="subline">I made this just for you 💗</p>
 
     <div class="stage">
       <button id="yesBtn">Yes</button>
@@ -160,18 +178,17 @@
     <div class="hint" id="hint"></div>
   </div>
 
-  <div class="overlay" id="overlay">
+  <div class="overlay" id="overlay" aria-hidden="true">
     <div class="overlay-card">
-      <div class="love" id="loveText"></div>
+      <div class="love" id="sceneTitle"></div>
 
       <div class="gif-wrap">
-        <img src="cat.gif" alt="excited cat">
+        <img id="sceneGif" src="cat1.gif" alt="scene gif">
       </div>
 
-      <div class="after-text">
-        Now you are my Valentine 💗<br>
-        and we will have a date 😌
-      </div>
+      <div class="after-text" id="sceneText"></div>
+
+      <button id="nextBtn" class="next-btn" type="button">Next</button>
     </div>
   </div>
 
@@ -179,20 +196,24 @@
     const name = "Subina";
 
     const headline = document.getElementById("headline");
+    const subline = document.getElementById("subline");
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
     const msg = document.getElementById("msg");
     const hint = document.getElementById("hint");
     const card = document.getElementById("card");
+
     const overlay = document.getElementById("overlay");
-    const loveText = document.getElementById("loveText");
+    const sceneTitle = document.getElementById("sceneTitle");
+    const sceneGif = document.getElementById("sceneGif");
+    const sceneText = document.getElementById("sceneText");
+    const nextBtn = document.getElementById("nextBtn");
 
     headline.textContent = `${name}, do you wanna be my valentines date? 👉👈🥹`;
-    loveText.textContent = `I love you, ${name} 💗`;
 
-    function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+    function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
-    /* NO logic */
+    // ---- NO logic: slow move + shrink; YES grows ----
     let noScale = 1;
     let yesScale = 1;
     let clicks = 0;
@@ -215,7 +236,7 @@
     function handleNo(){
       clicks++;
       noScale -= 0.18;
-      yesScale += 0.35;   // stärkeres Wachstum für YES
+      yesScale += 0.35;
 
       noBtn.style.transform = `scale(${Math.max(noScale,0)})`;
       yesBtn.style.transform = `translate(-110%,-50%) scale(${yesScale})`;
@@ -224,33 +245,60 @@
         clearInterval(moveTimer);
         noBtn.style.opacity = "0";
         noBtn.style.pointerEvents = "none";
-
         msg.textContent = "Okay… No is gone.";
         hint.textContent = "Tap Yes 😌";
-
         setTimeout(()=> noBtn.style.display="none",300);
       }
     }
 
-    noBtn.addEventListener("click",e=>{e.preventDefault();handleNo();});
-    noBtn.addEventListener("touchstart",e=>{e.preventDefault();handleNo();},{passive:false});
+    noBtn.addEventListener("click", e => { e.preventDefault(); handleNo(); });
+    noBtn.addEventListener("touchstart", e => { e.preventDefault(); handleNo(); }, { passive:false });
 
-    /* YES logic */
-    yesBtn.addEventListener("click",()=>{
+    startNo();
+    hint.textContent = "You can try No… but it won’t last.";
+
+    // ---- Scenes ----
+    let scene = 0;
+
+    function showScene1(){
+      scene = 1;
+      overlay.classList.add("show");
+      overlay.setAttribute("aria-hidden", "false");
+
+      sceneTitle.textContent = `YIPPEE 💗`;
+      sceneGif.src = "cat1.gif";
+      sceneGif.alt = "yippee cat";
+      sceneText.innerHTML = `Now you are my Valentine 💗<br>and we will have a date 😌`;
+      nextBtn.style.display = "inline-block";
+      nextBtn.textContent = "Next";
+    }
+
+    function showScene2(){
+      scene = 2;
+      sceneTitle.textContent = `HAPPY DANCE 🥳`;
+      sceneGif.src = "cat2.gif";
+      sceneGif.alt = "happy dance";
+      sceneText.textContent = `Okay, that’s it. I’m officially excited.`;
+      nextBtn.style.display = "none"; // Ende
+    }
+
+    // YES click -> fullscreen YES first, then scene 1
+    yesBtn.addEventListener("click", () => {
+      // Step 1: Fullscreen YES (still requires the click)
       yesBtn.classList.add("fullscreen");
-      yesBtn.innerHTML = `
-        YES 💗
-        <div class="yes-sub">Seems like this has to be your answer.</div>
-      `;
+      yesBtn.innerHTML = `YES 💗<div class="yes-sub">Seems like this has to be your answer.</div>`;
       card.style.opacity = ".1";
 
-      setTimeout(()=>{
-        overlay.classList.add("show");
-      },900); // kurze Pause, dann GIF + Love
+      // Step 2: Scene 1 appears after a short pause (no extra click needed)
+      setTimeout(() => {
+        showScene1();
+      }, 700);
     });
 
-    hint.textContent = "You can try No… but it won’t last.";
-    startNo();
+    // Next click -> Scene 2
+    nextBtn.addEventListener("click", () => {
+      if (scene === 1) showScene2();
+    });
   </script>
 </body>
 </html>
