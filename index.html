@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Valentinstag</title>
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 30% 20%, #ffe3ec, #fff6f9);
+      color: #1b1b1b;
+    }
+
+    .card {
+      width: min(560px, calc(100vw - 32px));
+      background: rgba(255,255,255,0.85);
+      border-radius: 24px;
+      padding: 28px 22px;
+      box-shadow: 0 18px 60px rgba(0,0,0,0.12);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(24px, 4vw, 36px);
+      letter-spacing: 0.2px;
+    }
+
+    p {
+      margin: 0 0 18px;
+      font-size: 16px;
+      opacity: 0.85;
+    }
+
+    .stage {
+      position: relative;
+      height: 170px;
+      border-radius: 18px;
+      background: rgba(255, 227, 236, 0.55);
+      display: grid;
+      place-items: center;
+      margin-top: 14px;
+    }
+
+    .buttons {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 12px 18px;
+      border-radius: 14px;
+      position: absolute;
+      user-select: none;
+      touch-action: manipulation;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+      transition: transform 120ms ease;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    #yesBtn {
+      left: 50%;
+      top: 55%;
+      transform: translate(-110%, -50%);
+      background: #ff3b7a;
+      color: white;
+    }
+
+    #noBtn {
+      left: 50%;
+      top: 55%;
+      transform: translate(10%, -50%);
+      background: #ffffff;
+      color: #1b1b1b;
+      border: 2px solid rgba(0,0,0,0.12);
+    }
+
+    .msg {
+      margin-top: 14px;
+      min-height: 22px;
+      font-weight: 600;
+    }
+
+    .hint {
+      margin-top: 6px;
+      font-size: 13px;
+      opacity: 0.65;
+    }
+
+    .hearts {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.45;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 18px;
+      animation: floatUp 1200ms ease forwards;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(10px); opacity: 0.0; }
+      20% { opacity: 1.0; }
+      to { transform: translateY(-80px); opacity: 0.0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1 id="headline"></h1>
+    <p id="subline">Bitte beantworte diese komplett seriöse Frage.</p>
+
+    <div class="stage" id="stage">
+      <div class="buttons">
+        <button id="yesBtn">Ja</button>
+        <button id="noBtn">Nein</button>
+      </div>
+      <div class="hearts" id="hearts"></div>
+    </div>
+
+    <div class="msg" id="msg"></div>
+    <div class="hint" id="hint"></div>
+  </div>
+
+  <script>
+    const name = "Subina";
+
+    const headline = document.getElementById("headline");
+    const msg = document.getElementById("msg");
+    const hint = document.getElementById("hint");
+    const stage = document.getElementById("stage");
+    const hearts = document.getElementById("hearts");
+
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+
+    headline.textContent = `${name}, willst du mein Valentinsdate sein?`;
+
+    let dodges = 0;
+    const maxDodges = 6;
+
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function spawnHeart() {
+      const h = document.createElement("div");
+      h.className = "heart";
+      h.textContent = "💗";
+      const rect = stage.getBoundingClientRect();
+      const x = rand(20, Math.max(20, Math.floor(rect.width - 20)));
+      const y = rand(Math.floor(rect.height * 0.55), Math.floor(rect.height * 0.75));
+      h.style.left = x + "px";
+      h.style.top = y + "px";
+      hearts.appendChild(h);
+      setTimeout(() => h.remove(), 1300);
+    }
+
+    function moveNoButton() {
+      if (dodges >= maxDodges) {
+        hint.textContent = "Ok. Wenn du wirklich Nein meinst, geht das jetzt.";
+        return;
+      }
+
+      dodges += 1;
+
+      const stageRect = stage.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      const padding = 14;
+      const maxX = Math.floor(stageRect.width - btnRect.width - padding);
+      const maxY = Math.floor(stageRect.height - btnRect.height - padding);
+
+      const x = rand(padding, Math.max(padding, maxX));
+      const y = rand(padding, Math.max(padding, maxY));
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+      noBtn.style.transform = "translate(0, 0)";
+
+      msg.textContent = dodges <= 2 ? "Nicht so schnell." : dodges <= 4 ? "Hartnäckig." : "Respekt.";
+      spawnHeart();
+    }
+
+    function armNoButton() {
+      noBtn.addEventListener("pointerenter", moveNoButton);
+      noBtn.addEventListener("pointerdown", moveNoButton);
+      noBtn.addEventListener("touchstart", moveNoButton, { passive: true });
+      noBtn.addEventListener("click", () => {
+        if (dodges >= maxDodges) {
+          msg.textContent = "Antwort angekommen. Danke für die Ehrlichkeit.";
+          hint.textContent = "";
+        } else {
+          moveNoButton();
+        }
+      });
+    }
+
+    yesBtn.addEventListener("click", () => {
+      msg.textContent = "Sehr gute Entscheidung. Speicherung im Herzen abgeschlossen.";
+      hint.textContent = "Screenshot machen und mir schicken, damit ich es beweisen kann.";
+      for (let i = 0; i < 10; i++) setTimeout(spawnHeart, i * 90);
+      noBtn.style.display = "none";
+      yesBtn.style.left = "50%";
+      yesBtn.style.top = "55%";
+      yesBtn.style.transform = "translate(-50%, -50%)";
+    });
+
+    armNoButton();
+    hint.textContent = "Pro Tipp: Versuche den Nein Button zu fangen.";
+  </script>
+</body>
+</html>
