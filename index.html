@@ -11,9 +11,11 @@
       padding: 0;
       height: 100%;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* PAGE 1 */
+    /* PAGE 1: Fullscreen split buttons */
     .choice {
       height: 100vh;
       width: 100vw;
@@ -49,10 +51,10 @@
     .bubble {
       position: absolute;
       left: 50%;
-      top: 22%; /* weiter oben */
+      top: 22%;
       transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.55); /* durchsichtig schwarz */
-      color: #ffffff; /* invertierte Schrift */
+      background: rgba(0, 0, 0, 0.55);
+      color: #ffffff;
       padding: 16px 22px;
       border-radius: 999px;
       font-size: clamp(18px, 4.5vw, 28px);
@@ -60,70 +62,156 @@
       box-shadow: 0 18px 60px rgba(0,0,0,0.35);
       text-align: center;
       pointer-events: none;
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       max-width: calc(100vw - 48px);
       line-height: 1.25;
     }
 
-    /* PAGE 2 */
+    /* PAGE 2: Apple-ish minimal */
     .result {
       display: none;
       min-height: 100vh;
       background:
-        radial-gradient(circle at 20% 10%, rgba(255,173,205,.6), transparent 45%),
-        radial-gradient(circle at 80% 30%, rgba(255,225,140,.55), transparent 40%),
-        linear-gradient(180deg,#fff7fb,#fff0f6);
-      padding: 24px 16px 28px;
+        radial-gradient(900px 600px at 20% 10%, rgba(255, 64, 129, 0.22), transparent 60%),
+        radial-gradient(900px 600px at 85% 25%, rgba(255, 0, 76, 0.18), transparent 62%),
+        radial-gradient(900px 600px at 30% 90%, rgba(255, 255, 255, 0.10), transparent 65%),
+        linear-gradient(180deg, #0b0b0f, #050507);
+      color: #ffffff;
+      padding: 28px 18px 34px;
       box-sizing: border-box;
     }
-
-    .result.show {
-      display: block;
-    }
+    .result.show { display: block; }
 
     .result-inner {
-      max-width: 860px;
+      max-width: 940px;
       margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0 18px;
+    }
+
+    .pill {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      color: rgba(255,255,255,0.92);
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ff2d55, #ff6aa8);
+      box-shadow: 0 10px 30px rgba(255, 45, 85, 0.35);
+    }
+
+    .headline {
       text-align: center;
-    }
-
-    .love {
-      font-size: clamp(32px, 7vw, 64px);
+      margin: 10px 0 8px;
+      font-size: clamp(32px, 6.8vw, 68px);
       font-weight: 900;
-      margin: 12px 0 8px;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
     }
 
-    .gifs {
+    .subline {
+      text-align: center;
+      margin: 0 auto 22px;
+      max-width: 42ch;
+      font-size: 16px;
+      line-height: 1.45;
+      color: rgba(255,255,255,0.78);
+    }
+
+    .grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 14px;
-      margin: 18px 0;
+      margin: 18px 0 18px;
     }
 
-    .gif-card {
-      border-radius: 20px;
+    .card {
+      position: relative;
+      border-radius: 24px;
       overflow: hidden;
-      background: rgba(255,227,236,0.6);
-      box-shadow: 0 16px 50px rgba(0,0,0,0.12);
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow:
+        0 30px 90px rgba(0,0,0,0.45),
+        inset 0 1px 0 rgba(255,255,255,0.08);
     }
 
-    .gif-card img {
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(600px 260px at 50% 0%, rgba(255, 45, 85, 0.20), transparent 55%),
+        radial-gradient(500px 240px at 15% 80%, rgba(255, 106, 168, 0.14), transparent 60%);
+      pointer-events: none;
+    }
+
+    .gif {
+      position: relative;
       display: block;
       width: 100%;
       height: auto;
+      transform: translateZ(0);
     }
 
-    .final-text {
-      font-size: 18px;
+    .caption {
+      position: relative;
+      padding: 12px 14px 14px;
+      text-align: center;
       font-weight: 700;
-      line-height: 1.35;
-      opacity: 0.9;
+      color: rgba(255,255,255,0.88);
+      letter-spacing: 0.2px;
     }
 
-    @media (min-width: 720px) {
-      .gifs {
-        grid-template-columns: 1fr 1fr;
-      }
+    .final {
+      margin-top: 18px;
+      text-align: center;
+      padding: 16px 14px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow:
+        0 25px 70px rgba(0,0,0,0.40),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .final strong {
+      display: block;
+      font-size: 18px;
+      letter-spacing: 0.1px;
+      color: rgba(255,255,255,0.92);
+      margin-bottom: 6px;
+    }
+
+    .final span {
+      display: block;
+      font-size: 16px;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.35;
+    }
+
+    @media (min-width: 820px) {
+      .grid { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
@@ -134,29 +222,34 @@
   <div class="choice" id="choice">
     <button id="yesBtn">YES</button>
     <button id="noBtn">NO</button>
-
-    <div class="bubble">
-      Subina, will you be my Valentine? 💗
-    </div>
+    <div class="bubble">Subina, will you be my Valentine? 💗</div>
   </div>
 
   <!-- PAGE 2 -->
   <div class="result" id="result">
     <div class="result-inner">
-      <div class="love">I love you 💗</div>
+      <div class="topbar">
+        <div class="pill"><span class="dot"></span> Valentine Mode</div>
+      </div>
 
-      <div class="gifs">
-        <div class="gif-card">
-          <img src="cat1.gif" alt="yippee cat">
+      <div class="headline">I love you 💗</div>
+      <div class="subline">Minimal chaos. Maximum feelings. Two reactions, same conclusion.</div>
+
+      <div class="grid">
+        <div class="card">
+          <img class="gif" src="cat1.gif" alt="yippee cat">
+          <div class="caption">Yippee energy</div>
         </div>
-        <div class="gif-card">
-          <img src="cat2.gif" alt="happy dance">
+
+        <div class="card">
+          <img class="gif" src="cat2.gif" alt="happy dance">
+          <div class="caption">Happy dance confirmation</div>
         </div>
       </div>
 
-      <div class="final-text">
-        Now you are my Valentine 💗<br>
-        and we will have a date 😌
+      <div class="final">
+        <strong>Now you are my Valentine 💗</strong>
+        <span>and we will have a date 😌</span>
       </div>
     </div>
   </div>
@@ -184,7 +277,6 @@
         noBtn.style.display = "none";
         noFlex = 0;
       }
-
       updateFlex();
     }
 
