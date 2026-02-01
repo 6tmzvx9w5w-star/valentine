@@ -13,33 +13,32 @@
       min-height:100vh;
       display:grid;
       place-items:center;
-      color:#1b1b1b;
       background:
-        radial-gradient(circle at 20% 10%, rgba(255, 173, 205, 0.65), transparent 45%),
-        radial-gradient(circle at 85% 25%, rgba(255, 225, 140, 0.55), transparent 40%),
-        radial-gradient(circle at 30% 85%, rgba(178, 230, 255, 0.55), transparent 45%),
-        linear-gradient(180deg, #fff7fb, #fff0f6);
+        radial-gradient(circle at 20% 10%, rgba(255,173,205,.6), transparent 45%),
+        radial-gradient(circle at 80% 30%, rgba(255,225,140,.55), transparent 40%),
+        linear-gradient(180deg,#fff7fb,#fff0f6);
+      color:#1b1b1b;
     }
 
     .card{
       width:min(560px,calc(100vw - 32px));
-      background:rgba(255,255,255,0.9);
+      background:rgba(255,255,255,.9);
       border-radius:24px;
       padding:28px 22px;
-      box-shadow:0 18px 60px rgba(0,0,0,0.12);
+      box-shadow:0 18px 60px rgba(0,0,0,.12);
       text-align:center;
       position:relative;
-      transition: opacity 220ms ease;
+      transition:opacity 200ms ease;
     }
 
-    h1{ margin:0 0 10px; font-size:clamp(24px,4vw,36px); }
-    p{ margin:0 0 18px; font-size:16px; opacity:0.85; }
+    h1{margin:0 0 10px;font-size:clamp(24px,4vw,36px);}
+    p{margin:0 0 18px;font-size:16px;opacity:.85;}
 
     .stage{
       position:relative;
       height:180px;
       border-radius:18px;
-      background:rgba(255, 227, 236, 0.55);
+      background:rgba(255,227,236,.55);
       margin-top:14px;
     }
 
@@ -51,8 +50,8 @@
       position:absolute;
       user-select:none;
       touch-action:manipulation;
-      box-shadow:0 10px 24px rgba(0,0,0,0.12);
-      transition: transform 220ms ease, opacity 220ms ease, width 420ms ease, height 420ms ease, border-radius 420ms ease;
+      box-shadow:0 10px 24px rgba(0,0,0,.12);
+      transition:transform 220ms ease,opacity 220ms ease;
     }
 
     #yesBtn{
@@ -67,103 +66,65 @@
     #noBtn{
       font-size:12px;
       padding:6px 8px;
-      border-radius:12px;
       background:#fff;
-      color:#1b1b1b;
-      border:2px solid rgba(0,0,0,0.12);
+      border:2px solid rgba(0,0,0,.12);
+      border-radius:12px;
       z-index:9999;
-      transition: transform 220ms ease, opacity 220ms ease, left 420ms ease, top 420ms ease;
     }
 
-    .msg{ margin-top:14px; min-height:22px; font-weight:700; }
-    .hint{ margin-top:6px; font-size:13px; opacity:0.65; }
+    .msg{margin-top:14px;min-height:22px;font-weight:700;}
+    .hint{margin-top:6px;font-size:13px;opacity:.65;}
 
-    /* Fullscreen Yes mode */
+    /* YES fullscreen */
     #yesBtn.fullscreen{
-      position:fixed !important;
+      position:fixed;
       inset:0;
-      left:0 !important;
-      top:0 !important;
       width:100vw;
       height:100vh;
       border-radius:0;
       transform:none !important;
       box-shadow:none;
-      font-size: clamp(28px, 6vw, 64px);
+      font-size:clamp(28px,6vw,64px);
       display:grid;
       place-items:center;
-      z-index: 999990;
+      z-index:99999;
     }
 
-    /* Celebration Overlay */
+    /* Overlay */
     .overlay{
       position:fixed;
       inset:0;
       display:none;
       place-items:center;
-      background: rgba(255, 240, 246, 0.75);
-      z-index: 999999;
-      overflow:hidden;
-      backdrop-filter: blur(6px);
+      background:rgba(255,240,246,.8);
+      backdrop-filter:blur(6px);
+      z-index:100000;
     }
-    .overlay.is-visible{ display:grid; }
+    .overlay.show{display:grid;}
 
     .overlay-card{
-      width:min(680px,calc(100vw - 28px));
-      background:rgba(255,255,255,0.86);
+      background:rgba(255,255,255,.9);
       border-radius:26px;
-      padding:18px 16px 16px;
-      box-shadow:0 18px 70px rgba(0,0,0,0.16);
+      padding:20px;
       text-align:center;
-      position:relative;
-      z-index:2;
+      box-shadow:0 18px 70px rgba(0,0,0,.16);
     }
 
     .love{
       font-weight:900;
-      font-size: clamp(34px, 7vw, 64px);
-      margin: 8px 0 10px;
-    }
-    .sub{
-      margin: 0 0 12px;
-      font-size: 16px;
-      opacity: 0.75;
+      font-size:clamp(34px,7vw,64px);
+      margin:8px 0;
     }
 
     .gif-wrap{
       border-radius:18px;
       overflow:hidden;
-      box-shadow:0 16px 50px rgba(0,0,0,0.12);
-      background: rgba(255,227,236,0.55);
+      margin-top:10px;
     }
+
     .gif-wrap img{
+      width:min(520px,92vw);
       display:block;
-      width:min(520px, 92vw);
-      height:auto;
-    }
-
-    .fall{
-      position:fixed;
-      top:-24px;
-      left:0;
-      font-size:18px;
-      pointer-events:none;
-      z-index:1;
-      animation: fallDown linear forwards;
-      will-change: transform, opacity;
-      opacity:0.95;
-      text-shadow:0 8px 18px rgba(0,0,0,0.12);
-    }
-    @keyframes fallDown{
-      0%   { transform: translate3d(var(--x), -30px, 0) rotate(0deg); opacity:0; }
-      10%  { opacity:1; }
-      100% { transform: translate3d(var(--x), calc(100vh + 60px), 0) rotate(var(--r)); opacity:0; }
-    }
-
-    @media (prefers-reduced-motion: reduce){
-      #noBtn{ transition:none; }
-      #yesBtn{ transition:none; }
-      .fall{ display:none; }
     }
   </style>
 </head>
@@ -171,7 +132,7 @@
 <body>
   <div class="card" id="card">
     <h1 id="headline"></h1>
-    <p id="subline">Pls answer this very important and super duper serious question.</p>
+    <p>I made this just for you 💗</p>
 
     <div class="stage">
       <button id="yesBtn">Yes</button>
@@ -182,186 +143,88 @@
     <div class="hint" id="hint"></div>
   </div>
 
-  <div class="overlay" id="overlay" aria-hidden="true">
+  <div class="overlay" id="overlay">
     <div class="overlay-card">
-      <div class="love" id="loveText">I love you 💗</div>
-      <p class="sub" id="loveSub">Best decision in human history.</p>
-
+      <div class="love" id="loveText"></div>
       <div class="gif-wrap">
-        <!-- Lege cat.gif ins Repo, gleiche Ebene wie index.html -->
-        <img id="celebrationGif" src="cat.gif" alt="excited cat gif">
+        <img src="cat.gif" alt="excited cat">
       </div>
-
-      <p class="sub" style="margin-top:12px">Screenshot optional. Bragging rights garantiert.</p>
     </div>
   </div>
 
   <script>
     const name = "Subina";
 
-    const card = document.getElementById("card");
-    const overlay = document.getElementById("overlay");
-    const celebrationGif = document.getElementById("celebrationGif");
-
     const headline = document.getElementById("headline");
-    const msg = document.getElementById("msg");
-    const hint = document.getElementById("hint");
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
+    const msg = document.getElementById("msg");
+    const hint = document.getElementById("hint");
+    const card = document.getElementById("card");
+    const overlay = document.getElementById("overlay");
+    const loveText = document.getElementById("loveText");
 
     headline.textContent = `${name}, do you wanna be my valentines date? 👉👈🥹`;
-    document.getElementById("loveText").textContent = `I love you, ${name} 💗`;
+    loveText.textContent = `I love you, ${name} 💗`;
 
-    function rand(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
 
-    // ---- NO: slow move + shrink; YES: grow ----
+    /* NO logic */
     let noScale = 1;
     let yesScale = 1;
-    let noClicks = 0;
-    const maxNoClicks = 5;
-    let moveTimer = null;
+    let clicks = 0;
+    const maxClicks = 5;
+    let moveTimer;
 
-    function setNoFixed(){
-      noBtn.style.position = "fixed";
-      noBtn.style.left = "20px";
-      noBtn.style.top = "20px";
-    }
-
-    function moveNoSlow(){
-      if (noBtn.style.display === "none") return;
-
-      const rect = noBtn.getBoundingClientRect();
+    function placeNo(){
+      const r = noBtn.getBoundingClientRect();
       const pad = 20;
-
-      const maxX = window.innerWidth - rect.width - pad;
-      const maxY = window.innerHeight - rect.height - pad;
-
-      noBtn.style.left = rand(pad, Math.max(pad, maxX)) + "px";
-      noBtn.style.top  = rand(pad, Math.max(pad, maxY)) + "px";
+      noBtn.style.left = rand(pad, window.innerWidth - r.width - pad) + "px";
+      noBtn.style.top  = rand(pad, window.innerHeight - r.height - pad) + "px";
     }
 
-    function startNoMovement(){
-      moveNoSlow();
-      moveTimer = setInterval(moveNoSlow, 1400); // langsamer als vorher
+    function startNo(){
+      noBtn.style.position = "fixed";
+      placeNo();
+      moveTimer = setInterval(placeNo, 1400);
     }
 
-    function stopNoMovement(){
-      if (!moveTimer) return;
-      clearInterval(moveTimer);
-      moveTimer = null;
-    }
-
-    function shrinkNoGrowYes(){
-      noClicks++;
-
+    function handleNo(){
+      clicks++;
       noScale -= 0.18;
       yesScale += 0.18;
 
-      noBtn.style.transform = `scale(${Math.max(noScale, 0)})`;
-      yesBtn.style.transform = `translate(-110%, -50%) scale(${yesScale})`;
+      noBtn.style.transform = `scale(${Math.max(noScale,0)})`;
+      yesBtn.style.transform = `translate(-110%,-50%) scale(${yesScale})`;
 
-      if (noClicks >= maxNoClicks){
-        stopNoMovement();
+      if(clicks >= maxClicks){
+        clearInterval(moveTimer);
         noBtn.style.opacity = "0";
         noBtn.style.pointerEvents = "none";
 
-        msg.textContent = "No slowly disappeared.";
-        hint.textContent = "Looks like there’s only one option left 😌";
+        msg.textContent = "Okay… No is gone.";
+        hint.textContent = "Tap Yes when you’re ready 😌";
 
-        setTimeout(() => {
-          noBtn.style.display = "none";
-          // optional: direkt full screen, auch ohne Yes click
-          makeYesFullscreenAndCelebrate();
-        }, 320);
+        setTimeout(()=> noBtn.style.display="none",300);
       }
     }
 
-    function bindNo(){
-      noBtn.addEventListener("click", (e) => { e.preventDefault(); shrinkNoGrowYes(); });
-      noBtn.addEventListener("touchstart", (e) => { e.preventDefault(); shrinkNoGrowYes(); }, { passive: false });
-    }
+    noBtn.addEventListener("click",e=>{e.preventDefault();handleNo();});
+    noBtn.addEventListener("touchstart",e=>{e.preventDefault();handleNo();},{passive:false});
 
-    // ---- Celebration: fullscreen YES + overlay + confetti/hearts ----
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let rainTimer = null;
-    let celebrating = false;
-
-    function spawnFalling(emoji, durationMs){
-      const el = document.createElement("div");
-      el.className = "fall";
-      el.textContent = emoji;
-
-      const x = rand(0, Math.max(0, window.innerWidth - 30));
-      const r = rand(-540, 540) + "deg";
-      el.style.setProperty("--x", x + "px");
-      el.style.setProperty("--r", r);
-      el.style.animationDuration = durationMs + "ms";
-
-      document.body.appendChild(el);
-      setTimeout(() => el.remove(), durationMs + 250);
-    }
-
-    function startRain(){
-      if (prefersReducedMotion) return;
-      if (rainTimer) return;
-
-      const emojis = ["🎉","🎊","💗","💕","💖","❤️","✨","🥳"];
-      const start = Date.now();
-      const runtimeMs = 5200;
-
-      rainTimer = setInterval(() => {
-        if (Date.now() - start > runtimeMs){
-          clearInterval(rainTimer);
-          rainTimer = null;
-          return;
-        }
-        spawnFalling(emojis[rand(0, emojis.length - 1)], rand(1400, 2400));
-        if (Math.random() < 0.35) spawnFalling("💗", rand(1200, 2200));
-      }, 70);
-    }
-
-    function showOverlay(){
-      overlay.classList.add("is-visible");
-      overlay.setAttribute("aria-hidden", "false");
-      startRain();
-    }
-
-    function makeYesFullscreenAndCelebrate(){
-      if (celebrating) return;
-      celebrating = true;
-
-      // GIF fallback: wenn cat.gif fehlt, sag es wenigstens statt White Screen
-      celebrationGif.addEventListener("error", () => {
-        celebrationGif.alt = "GIF fehlt: lade cat.gif ins Repo hoch.";
-      }, { once: true });
-
-      stopNoMovement();
-      noBtn.style.display = "none";
-
-      msg.textContent = "Best decision you could’ve made 💗";
-      hint.textContent = "Now I’m planning our date 😌";
-
-      // Yes -> Fullscreen
+    /* YES logic */
+    yesBtn.addEventListener("click",()=>{
       yesBtn.classList.add("fullscreen");
       yesBtn.textContent = "YES 💗";
+      card.style.opacity = ".15";
 
-      // Karte leicht ausblenden, dann Overlay
-      setTimeout(() => {
-        card.style.opacity = "0.15";
-        showOverlay();
-      }, 350);
-    }
-
-    // YES click triggers celebration
-    yesBtn.addEventListener("click", () => {
-      makeYesFullscreenAndCelebrate();
+      setTimeout(()=>{
+        overlay.classList.add("show");
+      },300);
     });
 
-    // Init
     hint.textContent = "You can try No… but it won’t last.";
-    setNoFixed();
-    bindNo();
-    startNoMovement();
+    startNo();
   </script>
 </body>
 </html>
