@@ -3,260 +3,180 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Valentinstag</title>
+  <title>Valentine</title>
 
   <style>
-    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
-
-    body{
-      margin:0;
-      min-height:100vh;
-      background:
-        radial-gradient(circle at 20% 10%, rgba(255,173,205,.55), transparent 45%),
-        radial-gradient(circle at 85% 25%, rgba(178,230,255,.45), transparent 45%),
-        linear-gradient(180deg, #fff7fb, #fff0f6);
-      color:#141414;
-    }
-
-    .wrap{
-      min-height:100vh;
-      display:grid;
-      grid-template-rows: auto 1fr auto;
-      padding: 18px 16px;
-      box-sizing: border-box;
-      gap: 12px;
-    }
-
-    .top, .bottom{
-      text-align:center;
-    }
-
-    .top h1{
-      margin: 8px 0 6px;
-      font-size: clamp(24px, 5vw, 40px);
-      line-height: 1.15;
-    }
-
-    .top p, .bottom p{
+    html, body {
       margin: 0;
-      font-size: 15px;
-      opacity: 0.82;
+      padding: 0;
+      height: 100%;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
     }
 
-    .choice{
-      width: min(780px, 100%);
-      margin: 0 auto;
-      height: min(56vh, 440px);
-      border-radius: 22px;
+    /* PAGE 1: FULLSCREEN BUTTONS */
+    .choice {
+      height: 100vh;
+      width: 100vw;
+      display: flex;
       overflow: hidden;
-      box-shadow: 0 18px 60px rgba(0,0,0,0.12);
-      display:flex;
-      background: rgba(255,255,255,0.55);
     }
 
-    .panel-btn{
-      border:0;
-      padding:0;
-      margin:0;
-      cursor:pointer;
-      display:grid;
-      place-items:center;
+    .choice button {
+      border: none;
+      cursor: pointer;
+      font-size: clamp(36px, 10vw, 96px);
       font-weight: 900;
-      letter-spacing: 0.5px;
       color: #fff;
-      font-size: clamp(28px, 8vw, 70px);
-      transition: flex-basis 220ms ease, transform 120ms ease, filter 160ms ease;
+      display: grid;
+      place-items: center;
+      transition: flex 260ms ease;
       user-select: none;
       touch-action: manipulation;
     }
 
-    .panel-btn:active{
-      transform: scale(0.995);
-    }
-
-    #yesBtn{
+    #yesBtn {
       background: linear-gradient(180deg, #22c55e, #16a34a);
-      flex: 60 0 60%;
+      flex: 1;
     }
 
-    #noBtn{
+    #noBtn {
       background: linear-gradient(180deg, #ef4444, #dc2626);
-      flex: 40 0 40%;
+      flex: 1;
     }
 
-    .subnote{
-      font-size: 14px;
-      opacity: 0.75;
-      margin-top: 10px;
+    /* PAGE 2 */
+    .result {
+      display: none;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255,173,205,.6), transparent 45%),
+        radial-gradient(circle at 80% 30%, rgba(255,225,140,.55), transparent 40%),
+        linear-gradient(180deg,#fff7fb,#fff0f6);
+      padding: 24px 16px 28px;
+      box-sizing: border-box;
     }
 
-    /* Second page view */
-    .result{
-      width: min(780px, 100%);
+    .result.show {
+      display: block;
+    }
+
+    .result-inner {
+      max-width: 860px;
       margin: 0 auto;
-      display:none;
-      border-radius: 22px;
-      overflow: hidden;
-      box-shadow: 0 18px 60px rgba(0,0,0,0.12);
-      background: rgba(255,255,255,0.88);
+      text-align: center;
     }
 
-    .result.show{
-      display:block;
-    }
-
-    .result-header{
-      padding: 16px 16px 10px;
-      text-align:center;
-    }
-
-    .love{
-      margin: 6px 0 6px;
+    .love {
+      font-size: clamp(32px, 7vw, 64px);
       font-weight: 900;
-      font-size: clamp(28px, 6vw, 56px);
+      margin: 12px 0 8px;
     }
 
-    .love-sub{
-      margin: 0;
-      opacity: 0.8;
-      font-size: 15px;
-    }
-
-    .gifs{
-      display:grid;
+    .gifs {
+      display: grid;
       grid-template-columns: 1fr;
-      gap: 10px;
-      padding: 12px 12px 14px;
+      gap: 14px;
+      margin: 18px 0;
     }
 
-    .gif-card{
-      border-radius: 18px;
+    .gif-card {
+      border-radius: 20px;
       overflow: hidden;
-      background: rgba(255,227,236,0.55);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.10);
+      background: rgba(255,227,236,0.6);
+      box-shadow: 0 16px 50px rgba(0,0,0,0.12);
     }
 
-    .gif-card img{
-      display:block;
+    .gif-card img {
+      display: block;
       width: 100%;
       height: auto;
     }
 
-    .result-footer{
-      padding: 0 16px 16px;
-      text-align:center;
-      font-size: 16px;
+    .final-text {
+      font-size: 18px;
       font-weight: 700;
-      opacity: 0.92;
       line-height: 1.35;
+      opacity: 0.9;
     }
 
-    @media (min-width: 720px){
-      .gifs{ grid-template-columns: 1fr 1fr; }
+    @media (min-width: 720px) {
+      .gifs {
+        grid-template-columns: 1fr 1fr;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="top">
-      <h1 id="headline"></h1>
-      <p id="topline">Pls answer this very important and super duper serious question.</p>
-    </div>
 
-    <!-- Page 1 -->
-    <div id="page1">
-      <div class="choice" aria-label="Yes or No choice">
-        <button id="yesBtn" class="panel-btn" type="button">YES</button>
-        <button id="noBtn" class="panel-btn" type="button">NO</button>
-      </div>
-      <div class="subnote" id="meterText" style="text-align:center;"></div>
-    </div>
+  <!-- PAGE 1 -->
+  <div class="choice" id="choice">
+    <button id="yesBtn">YES</button>
+    <button id="noBtn">NO</button>
+  </div>
 
-    <!-- Page 2 -->
-    <div id="result" class="result" aria-live="polite">
-      <div class="result-header">
-        <div class="love" id="loveTitle"></div>
-        <p class="love-sub">Two scientifically proven reactions to your answer.</p>
-      </div>
+  <!-- PAGE 2 -->
+  <div class="result" id="result">
+    <div class="result-inner">
+      <div class="love">I love you 💗</div>
 
       <div class="gifs">
         <div class="gif-card">
-          <img src="cat1.gif" alt="yippee cat gif">
+          <img src="cat1.gif" alt="yippee cat">
         </div>
         <div class="gif-card">
-          <img src="cat2.gif" alt="happy dance gif">
+          <img src="cat2.gif" alt="happy dance">
         </div>
       </div>
 
-      <div class="result-footer" id="finalText"></div>
-    </div>
-
-    <div class="bottom">
-      <p id="bottomline">If you press NO, it gets smaller. Because obviously.</p>
+      <div class="final-text">
+        Now you are my Valentine 💗<br>
+        and we will have a date 😌
+      </div>
     </div>
   </div>
 
   <script>
-    const name = "Subina";
-
-    const headline = document.getElementById("headline");
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
-    const meterText = document.getElementById("meterText");
-
-    const page1 = document.getElementById("page1");
+    const choice = document.getElementById("choice");
     const result = document.getElementById("result");
-    const loveTitle = document.getElementById("loveTitle");
-    const finalText = document.getElementById("finalText");
 
-    headline.textContent = `${name}, do you wanna be my valentine? 👉👈🥹`;
-    loveTitle.textContent = `I love you, ${name} 💗`;
-    finalText.innerHTML = `Now you are my Valentine 💗<br>and we will have a date 😌`;
+    let yesFlex = 1;
+    let noFlex = 1;
+    const shrinkStep = 0.18;   // wie stark NO schrumpft
 
-    let yesPct = 60;
-    let noPct = 40;
-
-    const minNo = 6;     // NO darf fast verschwinden, aber nie 0
-    const step = 8;      // pro NO click wird NO kleiner
-
-    function applyWidths() {
-      yesBtn.style.flexBasis = yesPct + "%";
-      noBtn.style.flexBasis = noPct + "%";
-      meterText.textContent = `Yes: ${yesPct}%   No: ${noPct}%`;
+    function updateFlex() {
+      yesBtn.style.flex = yesFlex;
+      noBtn.style.flex = Math.max(0, noFlex);
     }
 
-    function shrinkNoGrowYes() {
-      noPct = Math.max(minNo, noPct - step);
-      yesPct = 100 - noPct;
+    function shrinkNo() {
+      noFlex -= shrinkStep;
+      yesFlex += shrinkStep;
 
-      applyWidths();
+      if (noFlex <= 0.02) {
+        noBtn.style.display = "none";
+        noFlex = 0;
+      }
 
-      // optional: NO wird mit der Zeit etwas blasser
-      const fade = Math.max(0.55, noPct / 40);
-      noBtn.style.filter = `saturate(${fade})`;
+      updateFlex();
     }
 
-    noBtn.addEventListener("click", () => {
-      shrinkNoGrowYes();
-    });
-
+    noBtn.addEventListener("click", shrinkNo);
     noBtn.addEventListener("touchstart", (e) => {
       e.preventDefault();
-      shrinkNoGrowYes();
+      shrinkNo();
     }, { passive: false });
 
-    function goToResult() {
-      page1.style.display = "none";
+    yesBtn.addEventListener("click", () => {
+      choice.style.display = "none";
       result.classList.add("show");
       window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
-    yesBtn.addEventListener("click", () => {
-      goToResult();
     });
 
-    applyWidths();
+    updateFlex();
   </script>
+
 </body>
 </html>
