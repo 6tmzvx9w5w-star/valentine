@@ -20,7 +20,7 @@
 
     .card {
       width: min(560px, calc(100vw - 32px));
-      background: rgba(255,255,255,0.85);
+      background: rgba(255,255,255,0.88);
       border-radius: 24px;
       padding: 28px 22px;
       box-shadow: 0 18px 60px rgba(0,0,0,0.12);
@@ -43,12 +43,13 @@
 
     .stage {
       position: relative;
-      height: 170px;
+      height: 180px;
       border-radius: 18px;
       background: rgba(255, 227, 236, 0.55);
       display: grid;
       place-items: center;
       margin-top: 14px;
+      overflow: hidden;
     }
 
     .buttons {
@@ -67,7 +68,7 @@
       user-select: none;
       touch-action: manipulation;
       box-shadow: 0 10px 24px rgba(0,0,0,0.12);
-      transition: transform 120ms ease;
+      transition: transform 120ms ease, opacity 120ms ease;
     }
 
     button:active {
@@ -76,7 +77,7 @@
 
     #yesBtn {
       left: 50%;
-      top: 55%;
+      top: 58%;
       transform: translate(-110%, -50%);
       background: #ff3b7a;
       color: white;
@@ -84,17 +85,24 @@
 
     #noBtn {
       left: 50%;
-      top: 55%;
+      top: 58%;
       transform: translate(10%, -50%);
       background: #ffffff;
       color: #1b1b1b;
       border: 2px solid rgba(0,0,0,0.12);
+      will-change: left, top, transform;
+    }
+
+    #noBtn.is-yes {
+      background: #ff3b7a;
+      color: #fff;
+      border-color: transparent;
     }
 
     .msg {
       margin-top: 14px;
       min-height: 22px;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .hint {
@@ -107,7 +115,7 @@
       position: absolute;
       inset: 0;
       pointer-events: none;
-      opacity: 0.45;
+      opacity: 0.5;
     }
 
     .heart {
@@ -117,9 +125,15 @@
     }
 
     @keyframes floatUp {
-      from { transform: translateY(10px); opacity: 0.0; }
-      20% { opacity: 1.0; }
-      to { transform: translateY(-80px); opacity: 0.0; }
+      from { transform: translateY(10px); opacity: 0; }
+      20% { opacity: 1; }
+      to { transform: translateY(-80px); opacity: 0; }
+    }
+
+    .footer {
+      margin-top: 10px;
+      font-size: 12px;
+      opacity: 0.55;
     }
   </style>
 </head>
@@ -138,6 +152,7 @@
 
     <div class="msg" id="msg"></div>
     <div class="hint" id="hint"></div>
+    <div class="footer" id="footer"></div>
   </div>
 
   <script>
@@ -148,17 +163,19 @@
     const hint = document.getElementById("hint");
     const stage = document.getElementById("stage");
     const hearts = document.getElementById("hearts");
+    const footer = document.getElementById("footer");
 
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
 
     headline.textContent = `${name}, willst du mein Valentinsdate sein?`;
 
-    let dodges = 0;
-    const maxDodges = 6;
-
     function rand(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function clamp(v, min, max) {
+      return Math.max(min, Math.min(max, v));
     }
 
     function spawnHeart() {
@@ -174,58 +191,127 @@
       setTimeout(() => h.remove(), 1300);
     }
 
-    function moveNoButton() {
-      if (dodges >= maxDodges) {
-        hint.textContent = "Ok. Wenn du wirklich Nein meinst, geht das jetzt.";
-        return;
-      }
-
-      dodges += 1;
-
+    function placeNoButton(x, y) {
       const stageRect = stage.getBoundingClientRect();
       const btnRect = noBtn.getBoundingClientRect();
 
-      const padding = 14;
-      const maxX = Math.floor(stageRect.width - btnRect.width - padding);
-      const maxY = Math.floor(stageRect.height - btnRect.height - padding);
+      const padding = 10;
+      const maxX = stageRect.width - btnRect.width - padding;
+      const maxY = stageRect.height - btnRect.height - padding;
 
-      const x = rand(padding, Math.max(padding, maxX));
-      const y = rand(padding, Math.max(padding, maxY));
+      const cx = clamp(x, padding, Math.max(padding, maxX));
+      const cy = clamp(y, padding, Math.max(padding, maxY));
 
-      noBtn.style.left = x + "px";
-      noBtn.style.top = y + "px";
+      noBtn.style.left = cx + "px";
+      noBtn.style.top = cy + "px";
       noBtn.style.transform = "translate(0, 0)";
+    }
 
-      msg.textContent = dodges <= 2 ? "Nicht so schnell." : dodges <= 4 ? "Hartnäckig." : "Respekt.";
-      spawnHeart();
+    function randomPlaceNoButton() {
+      const stageRect = stage.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      const padding = 10;
+      const maxX = Math.max(padding, stageRect.width - btnRect.width - padding);
+      const maxY = Math.max(padding, stageRect.height - btnRect.height - padding);
+
+      placeNoButton(rand(padding, maxX), rand(padding, maxY));
+    }
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let driftTimer = null;
+
+    function startNoButtonDrift() {
+      if (prefersReducedMotion) return;
+      if (driftTimer) return;
+
+      driftTimer = setInterval(() => {
+        if (noBtn.classList.contains("is-yes")) return;
+        randomPlaceNoButton();
+      }, 420);
+    }
+
+    function stopNoButtonDrift() {
+      if (!driftTimer) return;
+      clearInterval(driftTimer);
+      driftTimer = null;
+    }
+
+    function lockToCenterAsYesButton() {
+      const stageRect = stage.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      const x = (stageRect.width - btnRect.width) / 2;
+      const y = (stageRect.height - btnRect.height) / 2;
+
+      placeNoButton(x, y);
+    }
+
+    function transformNoIntoYes() {
+      stopNoButtonDrift();
+
+      noBtn.classList.add("is-yes");
+      noBtn.textContent = "Ja";
+
+      msg.textContent = "Nein hat sich spontan umentschieden.";
+      hint.textContent = "Tippe auf Ja.";
+
+      for (let i = 0; i < 8; i++) setTimeout(spawnHeart, i * 80);
+
+      lockToCenterAsYesButton();
+
+      const toYes = (e) => {
+        e.preventDefault();
+        yesBtn.click();
+      };
+
+      noBtn.addEventListener("click", toYes, { once: true });
+      noBtn.addEventListener("touchend", toYes, { passive: false, once: true });
+      noBtn.addEventListener("pointerup", toYes, { once: true });
     }
 
     function armNoButton() {
-      noBtn.addEventListener("pointerenter", moveNoButton);
-      noBtn.addEventListener("pointerdown", moveNoButton);
-      noBtn.addEventListener("touchstart", moveNoButton, { passive: true });
-      noBtn.addEventListener("click", () => {
-        if (dodges >= maxDodges) {
-          msg.textContent = "Antwort angekommen. Danke für die Ehrlichkeit.";
-          hint.textContent = "";
-        } else {
-          moveNoButton();
-        }
-      });
+      randomPlaceNoButton();
+      startNoButtonDrift();
+
+      const catchAttempt = (e) => {
+        e.preventDefault();
+        if (noBtn.classList.contains("is-yes")) return;
+        transformNoIntoYes();
+      };
+
+      noBtn.addEventListener("touchstart", catchAttempt, { passive: false });
+      noBtn.addEventListener("pointerdown", catchAttempt);
+      noBtn.addEventListener("mousedown", catchAttempt);
     }
 
     yesBtn.addEventListener("click", () => {
       msg.textContent = "Sehr gute Entscheidung. Speicherung im Herzen abgeschlossen.";
-      hint.textContent = "Screenshot machen und mir schicken, damit ich es beweisen kann.";
-      for (let i = 0; i < 10; i++) setTimeout(spawnHeart, i * 90);
+      hint.textContent = "Screenshot machen und mir schicken 😌";
+      footer.textContent = "";
+
+      for (let i = 0; i < 12; i++) setTimeout(spawnHeart, i * 70);
+
       noBtn.style.display = "none";
       yesBtn.style.left = "50%";
-      yesBtn.style.top = "55%";
+      yesBtn.style.top = "58%";
       yesBtn.style.transform = "translate(-50%, -50%)";
     });
 
+    window.addEventListener("resize", () => {
+      if (noBtn.style.display === "none") return;
+      if (noBtn.classList.contains("is-yes")) {
+        lockToCenterAsYesButton();
+      } else {
+        randomPlaceNoButton();
+      }
+    });
+
+    msg.textContent = "";
+    hint.textContent = "Pro Tipp: Fang den Nein Button.";
+    footer.textContent = "";
+
     armNoButton();
-    hint.textContent = "Pro Tipp: Versuche den Nein Button zu fangen.";
   </script>
 </body>
 </html>
