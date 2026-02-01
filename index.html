@@ -51,7 +51,7 @@
       user-select:none;
       touch-action:manipulation;
       box-shadow:0 10px 24px rgba(0,0,0,.12);
-      transition:transform 240ms ease,opacity 240ms ease;
+      transition:transform 260ms ease,opacity 260ms ease;
     }
 
     #yesBtn{
@@ -75,7 +75,7 @@
     .msg{margin-top:14px;min-height:22px;font-weight:700;}
     .hint{margin-top:6px;font-size:13px;opacity:.65;}
 
-    /* YES fullscreen */
+    /* YES fullscreen – mobile first */
     #yesBtn.fullscreen{
       position:fixed;
       inset:0;
@@ -84,11 +84,19 @@
       border-radius:0;
       transform:none !important;
       box-shadow:none;
-      font-size:clamp(42px,8vw,90px);
-      display:grid;
-      place-items:center;
+      font-size:clamp(52px,10vw,110px);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:18px;
       z-index:99999;
-      letter-spacing:1px;
+    }
+
+    .yes-sub{
+      font-size:clamp(14px,4vw,18px);
+      opacity:.85;
+      font-weight:500;
     }
 
     /* Overlay */
@@ -207,7 +215,7 @@
     function handleNo(){
       clicks++;
       noScale -= 0.18;
-      yesScale += 0.28;   // YES wächst stärker
+      yesScale += 0.35;   // stärkeres Wachstum für YES
 
       noBtn.style.transform = `scale(${Math.max(noScale,0)})`;
       yesBtn.style.transform = `translate(-110%,-50%) scale(${yesScale})`;
@@ -230,12 +238,15 @@
     /* YES logic */
     yesBtn.addEventListener("click",()=>{
       yesBtn.classList.add("fullscreen");
-      yesBtn.textContent = "YES 💗";
-      card.style.opacity = ".12";
+      yesBtn.innerHTML = `
+        YES 💗
+        <div class="yes-sub">Seems like this has to be your answer.</div>
+      `;
+      card.style.opacity = ".1";
 
       setTimeout(()=>{
         overlay.classList.add("show");
-      },350);
+      },900); // kurze Pause, dann GIF + Love
     });
 
     hint.textContent = "You can try No… but it won’t last.";
