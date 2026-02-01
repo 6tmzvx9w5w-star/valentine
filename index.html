@@ -51,22 +51,22 @@
     button {
       border: 0;
       cursor: pointer;
-      font-size: 18px;
       padding: 12px 18px;
       border-radius: 14px;
       position: absolute;
       user-select: none;
       touch-action: manipulation;
       box-shadow: 0 10px 24px rgba(0,0,0,0.12);
-      transition: transform 200ms ease, opacity 200ms ease;
+      transition: transform 220ms ease, opacity 220ms ease;
     }
 
     #yesBtn {
       left: 50%;
       top: 58%;
-      transform: translate(-110%, -50%);
+      transform: translate(-110%, -50%) scale(1);
       background: #ff3b7a;
       color: white;
+      font-size: 18px;
     }
 
     #noBtn {
@@ -96,7 +96,7 @@
 <body>
   <div class="card">
     <h1 id="headline"></h1>
-    <p id="subline">Answer wisely my love 💗</p>
+    <p>decide wisely </p>
 
     <div class="stage">
       <button id="yesBtn">Yes</button>
@@ -122,9 +122,10 @@
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    // ---- NO BUTTON LOGIC ----
+    // --- NO BUTTON LOGIC ---
 
     let noScale = 1;
+    let yesScale = 1;
     let noClicks = 0;
     const maxNoClicks = 5;
     let moveTimer = null;
@@ -142,11 +143,8 @@
       const maxX = window.innerWidth - rect.width - pad;
       const maxY = window.innerHeight - rect.height - pad;
 
-      const x = rand(pad, Math.max(pad, maxX));
-      const y = rand(pad, Math.max(pad, maxY));
-
-      noBtn.style.left = x + "px";
-      noBtn.style.top = y + "px";
+      noBtn.style.left = rand(pad, Math.max(pad, maxX)) + "px";
+      noBtn.style.top  = rand(pad, Math.max(pad, maxY)) + "px";
     }
 
     function startNoMovement() {
@@ -154,53 +152,61 @@
       moveTimer = setInterval(moveNoSlow, 1200);
     }
 
-    function shrinkNo() {
+    function shrinkNoGrowYes() {
       noClicks++;
+
       noScale -= 0.18;
+      yesScale += 0.18;
 
       noBtn.style.transform = `scale(${Math.max(noScale, 0)})`;
+      yesBtn.style.transform = `translate(-110%, -50%) scale(${yesScale})`;
 
       if (noClicks >= maxNoClicks) {
         clearInterval(moveTimer);
+
         noBtn.style.opacity = "0";
         noBtn.style.pointerEvents = "none";
 
         msg.textContent = "No slowly disappeared.";
-        hint.textContent = "Only one option left 😌";
+        hint.textContent = "Looks like there’s only one option left 😌";
 
         setTimeout(() => {
           noBtn.style.display = "none";
+
+          yesBtn.style.left = "50%";
+          yesBtn.style.top = "58%";
+          yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
         }, 300);
       }
     }
 
     noBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      shrinkNo();
+      shrinkNoGrowYes();
     });
 
     noBtn.addEventListener("touchstart", (e) => {
       e.preventDefault();
-      shrinkNo();
+      shrinkNoGrowYes();
     }, { passive: false });
 
     setNoFixed();
     startNoMovement();
 
-    // ---- YES BUTTON ----
+    // --- YES BUTTON ---
 
     yesBtn.addEventListener("click", () => {
-      msg.textContent = "Best decision you could’ve made 💗";
-      hint.textContent = "Now we are going to have a date 😌";
+      msg.textContent = "Best decision you could’ve made hehe 💗";
+      hint.textContent = "Now we have a date 😌";
 
       noBtn.style.display = "none";
 
       yesBtn.style.left = "50%";
       yesBtn.style.top = "58%";
-      yesBtn.style.transform = "translate(-50%, -50%)";
+      yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale + 0.2})`;
     });
 
-    hint.textContent = "You can try No… but it won’t last.";
+    hint.textContent = "You can try No. 😈";
   </script>
 </body>
 </html>
