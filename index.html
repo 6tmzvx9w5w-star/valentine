@@ -1,83 +1,85 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Valentine</title>
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
-
   <style>
+    :root{
+      /* iPhone System-Schrift */
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
     html, body{
       margin:0;
       padding:0;
       height:100%;
-      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      overflow:hidden;
+      background:#000;
       -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     /* PAGE 1 */
     .choice{
-      height:100vh;
-      width:100vw;
+      position:fixed;
+      inset:0;
       display:flex;
-      position:relative;
       overflow:hidden;
+      user-select:none;
     }
 
-    .choice button{
+    .seg{
       border:none;
+      padding:0;
+      margin:0;
       cursor:pointer;
-      font-size:clamp(36px,10vw,96px);
-      font-weight:800;
-      color:#fff;
       display:grid;
       place-items:center;
-      transition:flex 260ms ease;
-      user-select:none;
-      touch-action:manipulation;
+      color:#fff;
+      font-weight:800;
+      font-size: clamp(32px, 10vw, 92px);
+      letter-spacing: 0.5px;
+      transition: flex 220ms ease;
+      touch-action: manipulation;
     }
 
-    #yesBtn{
+    .yes{
       background: linear-gradient(180deg, #22c55e, #16a34a);
-      flex:1;
     }
 
-    #noBtn{
+    .no{
       background: linear-gradient(180deg, #ef4444, #dc2626);
-      flex:1;
     }
 
     /* QUESTION BUBBLE */
     .bubble{
-      position:absolute;
+      position:fixed;
       left:50%;
-      top:22%;
+      top:18%;
       transform:translateX(-50%);
       background:rgba(0,0,0,0.55);
       color:#fff;
-      padding:18px 26px;
+      padding:14px 18px;
       border-radius:999px;
-      font-family:'Playfair Display', serif;
-      font-size:clamp(20px,4.5vw,30px);
-      font-weight:700;
+      font-size:clamp(16px,4.4vw,24px);
+      font-weight:650;
       text-align:center;
       pointer-events:none;
       backdrop-filter: blur(10px);
-      max-width:calc(100vw - 48px);
+      -webkit-backdrop-filter: blur(10px);
+      max-width:calc(100vw - 44px);
       box-shadow:0 18px 60px rgba(0,0,0,0.35);
       line-height:1.25;
-      letter-spacing:0.2px;
     }
 
     /* PAGE 2 */
     .result{
       display:none;
-      min-height:100vh;
+      position:fixed;
+      inset:0;
+      overflow:auto;
       background:
         radial-gradient(900px 600px at 20% 10%, rgba(255, 64, 129, 0.22), transparent 60%),
         radial-gradient(900px 600px at 85% 25%, rgba(255, 0, 76, 0.18), transparent 62%),
@@ -105,12 +107,13 @@
       display:inline-flex;
       align-items:center;
       gap:10px;
-      padding:10px 16px;
+      padding:10px 14px;
       border-radius:999px;
       background:rgba(255,255,255,0.08);
       backdrop-filter: blur(12px);
-      font-weight:600;
-      margin-bottom:22px;
+      -webkit-backdrop-filter: blur(12px);
+      font-weight:650;
+      margin-bottom:18px;
       color: rgba(255,255,255,0.92);
       box-shadow: 0 20px 60px rgba(0,0,0,0.35);
     }
@@ -124,19 +127,18 @@
     }
 
     .headline{
-      font-family:'Playfair Display', serif;
-      font-size:clamp(36px,7vw,72px);
-      font-weight:800;
-      margin:10px 0 12px;
-      letter-spacing:-0.01em;
+      font-size:clamp(34px,7vw,68px);
+      font-weight:850;
+      margin:10px 0 10px;
+      letter-spacing:-0.02em;
     }
 
     .subline{
       font-size:16px;
       color:rgba(255,255,255,0.78);
-      max-width:42ch;
-      margin:0 auto 30px;
-      line-height:1.5;
+      max-width:44ch;
+      margin:0 auto 28px;
+      line-height:1.45;
     }
 
     .gif-card{
@@ -146,6 +148,7 @@
       max-width:420px;
       background:rgba(255,255,255,0.06);
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-radius:26px;
       padding:22px 16px 18px;
       box-shadow:
@@ -162,35 +165,28 @@
       filter: drop-shadow(0 24px 60px rgba(0,0,0,0.38));
     }
 
-    .caption{
-      margin-top:14px;
-      font-weight:600;
-      color:rgba(255,255,255,0.88);
-      font-size:15px;
-    }
-
     .final{
-      padding:20px 18px;
+      padding:18px 16px;
       border-radius:24px;
       background:rgba(255,255,255,0.08);
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       box-shadow:
         0 25px 70px rgba(0,0,0,0.40),
         inset 0 1px 0 rgba(255,255,255,0.08);
-      margin-top:22px;
     }
 
     .final strong{
       display:block;
-      font-family:'Playfair Display', serif;
-      font-size:20px;
-      margin-bottom:8px;
+      font-size:18px;
+      margin-bottom:6px;
+      color: rgba(255,255,255,0.92);
     }
 
     .final span{
       font-size:16px;
       color:rgba(255,255,255,0.78);
-      line-height:1.45;
+      line-height:1.35;
     }
   </style>
 </head>
@@ -198,23 +194,18 @@
 <body>
 
   <!-- PAGE 1 -->
-  <div class="choice" id="choice">
-    <button id="yesBtn">YES</button>
-    <button id="noBtn">NO</button>
-    <div class="bubble">Subina, will you be my Valentine? 💗</div>
-  </div>
+  <div id="choice" class="choice" aria-label="Valentine choice"></div>
+  <div class="bubble">Subina, will you be my Valentine? 💗</div>
 
   <!-- PAGE 2 -->
-  <div class="result" id="result">
+  <div id="result" class="result">
     <div class="result-inner">
       <div class="pill"><span class="dot"></span> Valentine Mode</div>
-
       <div class="headline">I love you 💗</div>
       <div class="subline">Minimal. Honest. Official.</div>
 
       <div class="gif-card">
         <img class="gif" src="cat2.gif" alt="happy dance cat">
-        <div class="caption">Happy dance confirmation</div>
       </div>
 
       <div class="final">
@@ -225,44 +216,97 @@
   </div>
 
   <script>
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn = document.getElementById("noBtn");
-    const choice = document.getElementById("choice");
-    const result = document.getElementById("result");
+    const choiceEl = document.getElementById("choice");
+    const resultEl = document.getElementById("result");
 
-    let yesFlex = 1;
-    let noFlex = 1;
-    const shrinkStep = 0.18;
+    // Segmente: type = "yes"|"no", w = weight
+    let segments = [
+      { type: "yes", w: 1 },
+      { type: "no",  w: 1 }
+    ];
 
-    function updateFlex(){
-      yesBtn.style.flex = yesFlex;
-      noBtn.style.flex = Math.max(0, noFlex);
+    // Ab wann NO einfach verschwindet (statt weiter zu splitten)
+    const MIN_NO_WEIGHT = 0.12;
+
+    function render() {
+      choiceEl.innerHTML = "";
+      segments.forEach((s, i) => {
+        const b = document.createElement("button");
+        b.className = `seg ${s.type}`;
+        b.style.flex = String(s.w);
+        b.dataset.index = String(i);
+        b.textContent = (s.type === "yes") ? "YES" : "NO";
+        choiceEl.appendChild(b);
+      });
     }
 
-    function shrinkNo(){
-      noFlex -= shrinkStep;
-      yesFlex += shrinkStep;
-
-      if (noFlex <= 0.02){
-        noBtn.style.display = "none";
-        noFlex = 0;
-      }
-      updateFlex();
-    }
-
-    noBtn.addEventListener("click", shrinkNo);
-    noBtn.addEventListener("touchstart", (e) => {
-      e.preventDefault();
-      shrinkNo();
-    }, { passive:false });
-
-    yesBtn.addEventListener("click", () => {
-      choice.style.display = "none";
-      result.classList.add("show");
+    function goToResult() {
+      choiceEl.style.display = "none";
+      resultEl.classList.add("show");
+      // iOS fühlt sich mit instant besser an, aber smooth ist ok
       window.scrollTo({ top: 0, behavior: "smooth" });
-    });
+    }
 
-    updateFlex();
+    function splitNoAt(index) {
+      const seg = segments[index];
+      if (!seg || seg.type !== "no") return;
+
+      // Wenn NO schon winzig ist, machen wir es einfach zu YES (kein neues NO mehr)
+      if (seg.w <= MIN_NO_WEIGHT) {
+        segments[index] = { type: "yes", w: seg.w };
+        // Optional: wenn jetzt gar kein NO mehr existiert, alles gut.
+        render();
+        return;
+      }
+
+      // Troll-Logik:
+      // NO wird zu YES, und an derselben Stelle entsteht zusätzlich ein NO.
+      // Also ersetzen wir dieses NO-Segment durch [YES, NO] mit halber Breite.
+      const half = seg.w / 2;
+      const replacement = [
+        { type: "yes", w: half },
+        { type: "no",  w: half }
+      ];
+
+      segments.splice(index, 1, ...replacement);
+      render();
+    }
+
+    // Event delegation
+    choiceEl.addEventListener("click", (e) => {
+      const btn = e.target.closest("button.seg");
+      if (!btn) return;
+
+      const idx = Number(btn.dataset.index);
+      const seg = segments[idx];
+      if (!seg) return;
+
+      if (seg.type === "yes") {
+        goToResult();
+      } else {
+        splitNoAt(idx);
+      }
+    }, { passive: true });
+
+    // Touchstart damit es auf iPhone direkt reagiert
+    choiceEl.addEventListener("touchstart", (e) => {
+      const btn = e.target.closest("button.seg");
+      if (!btn) return;
+      const idx = Number(btn.dataset.index);
+      const seg = segments[idx];
+      if (!seg) return;
+
+      // verhindert ghost clicks nicht komplett, aber gut genug
+      e.preventDefault();
+
+      if (seg.type === "yes") {
+        goToResult();
+      } else {
+        splitNoAt(idx);
+      }
+    }, { passive: false });
+
+    render();
   </script>
 
 </body>
