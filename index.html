@@ -51,7 +51,7 @@
       user-select:none;
       touch-action:manipulation;
       box-shadow:0 10px 24px rgba(0,0,0,.12);
-      transition:transform 220ms ease,opacity 220ms ease;
+      transition:transform 240ms ease,opacity 240ms ease;
     }
 
     #yesBtn{
@@ -84,10 +84,11 @@
       border-radius:0;
       transform:none !important;
       box-shadow:none;
-      font-size:clamp(28px,6vw,64px);
+      font-size:clamp(42px,8vw,90px);
       display:grid;
       place-items:center;
       z-index:99999;
+      letter-spacing:1px;
     }
 
     /* Overlay */
@@ -96,35 +97,43 @@
       inset:0;
       display:none;
       place-items:center;
-      background:rgba(255,240,246,.8);
+      background:rgba(255,240,246,.82);
       backdrop-filter:blur(6px);
       z-index:100000;
     }
     .overlay.show{display:grid;}
 
     .overlay-card{
-      background:rgba(255,255,255,.9);
+      background:rgba(255,255,255,.92);
       border-radius:26px;
-      padding:20px;
+      padding:22px 20px;
       text-align:center;
       box-shadow:0 18px 70px rgba(0,0,0,.16);
+      max-width:680px;
     }
 
     .love{
       font-weight:900;
-      font-size:clamp(34px,7vw,64px);
-      margin:8px 0;
+      font-size:clamp(36px,7vw,64px);
+      margin:6px 0 10px;
     }
 
     .gif-wrap{
       border-radius:18px;
       overflow:hidden;
-      margin-top:10px;
+      margin:14px 0;
     }
 
     .gif-wrap img{
       width:min(520px,92vw);
       display:block;
+    }
+
+    .after-text{
+      margin-top:10px;
+      font-size:18px;
+      font-weight:600;
+      opacity:.9;
     }
   </style>
 </head>
@@ -146,8 +155,14 @@
   <div class="overlay" id="overlay">
     <div class="overlay-card">
       <div class="love" id="loveText"></div>
+
       <div class="gif-wrap">
         <img src="cat.gif" alt="excited cat">
+      </div>
+
+      <div class="after-text">
+        Now you are my Valentine 💗<br>
+        and we will have a date 😌
       </div>
     </div>
   </div>
@@ -192,7 +207,7 @@
     function handleNo(){
       clicks++;
       noScale -= 0.18;
-      yesScale += 0.18;
+      yesScale += 0.28;   // YES wächst stärker
 
       noBtn.style.transform = `scale(${Math.max(noScale,0)})`;
       yesBtn.style.transform = `translate(-110%,-50%) scale(${yesScale})`;
@@ -203,7 +218,7 @@
         noBtn.style.pointerEvents = "none";
 
         msg.textContent = "Okay… No is gone.";
-        hint.textContent = "Tap Yes when you’re ready 😌";
+        hint.textContent = "Tap Yes 😌";
 
         setTimeout(()=> noBtn.style.display="none",300);
       }
@@ -216,11 +231,11 @@
     yesBtn.addEventListener("click",()=>{
       yesBtn.classList.add("fullscreen");
       yesBtn.textContent = "YES 💗";
-      card.style.opacity = ".15";
+      card.style.opacity = ".12";
 
       setTimeout(()=>{
         overlay.classList.add("show");
-      },300);
+      },350);
     });
 
     hint.textContent = "You can try No… but it won’t last.";
