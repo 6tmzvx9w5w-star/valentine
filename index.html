@@ -6,212 +6,237 @@
   <title>Valentine</title>
 
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
+    html, body{
+      margin:0;
+      padding:0;
+      height:100%;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
 
-    /* PAGE 1: Fullscreen split buttons */
-    .choice {
-      height: 100vh;
-      width: 100vw;
-      display: flex;
-      overflow: hidden;
-      position: relative;
+    /* PAGE 1 */
+    .choice{
+      height:100vh;
+      width:100vw;
+      display:flex;
+      overflow:hidden;
+      position:relative;
     }
 
-    .choice button {
-      border: none;
-      cursor: pointer;
-      font-size: clamp(36px, 10vw, 96px);
-      font-weight: 900;
-      color: #fff;
-      display: grid;
-      place-items: center;
-      transition: flex 260ms ease;
-      user-select: none;
-      touch-action: manipulation;
+    .choice button{
+      border:none;
+      cursor:pointer;
+      font-size:clamp(36px,10vw,96px);
+      font-weight:900;
+      color:#fff;
+      display:grid;
+      place-items:center;
+      transition:flex 260ms ease;
+      user-select:none;
+      touch-action:manipulation;
     }
 
-    #yesBtn {
+    #yesBtn{
       background: linear-gradient(180deg, #22c55e, #16a34a);
-      flex: 1;
+      flex:1;
     }
 
-    #noBtn {
+    #noBtn{
       background: linear-gradient(180deg, #ef4444, #dc2626);
-      flex: 1;
+      flex:1;
     }
 
     /* QUESTION BUBBLE */
-    .bubble {
-      position: absolute;
-      left: 50%;
-      top: 22%;
-      transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.55);
-      color: #ffffff;
-      padding: 16px 22px;
-      border-radius: 999px;
-      font-size: clamp(18px, 4.5vw, 28px);
-      font-weight: 700;
-      box-shadow: 0 18px 60px rgba(0,0,0,0.35);
-      text-align: center;
-      pointer-events: none;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      max-width: calc(100vw - 48px);
-      line-height: 1.25;
+    .bubble{
+      position:absolute;
+      left:50%;
+      top:22%;
+      transform:translateX(-50%);
+      background:rgba(0,0,0,0.55);
+      color:#fff;
+      padding:16px 22px;
+      border-radius:999px;
+      font-size:clamp(18px,4.5vw,28px);
+      font-weight:700;
+      box-shadow:0 18px 60px rgba(0,0,0,0.35);
+      text-align:center;
+      pointer-events:none;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      max-width:calc(100vw - 48px);
+      line-height:1.25;
     }
 
     /* PAGE 2: Apple-ish minimal */
-    .result {
-      display: none;
-      min-height: 100vh;
+    .result{
+      display:none;
+      min-height:100vh;
       background:
         radial-gradient(900px 600px at 20% 10%, rgba(255, 64, 129, 0.22), transparent 60%),
         radial-gradient(900px 600px at 85% 25%, rgba(255, 0, 76, 0.18), transparent 62%),
-        radial-gradient(900px 600px at 30% 90%, rgba(255, 255, 255, 0.10), transparent 65%),
         linear-gradient(180deg, #0b0b0f, #050507);
-      color: #ffffff;
-      padding: 28px 18px 34px;
-      box-sizing: border-box;
+      color:#fff;
+      padding:28px 18px 34px;
+      box-sizing:border-box;
     }
-    .result.show { display: block; }
+    .result.show{ display:block; }
 
-    .result-inner {
-      max-width: 940px;
-      margin: 0 auto;
-    }
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 10px 0 18px;
+    .result-inner{
+      max-width:940px;
+      margin:0 auto;
     }
 
-    .pill {
-      display: inline-flex;
-      gap: 10px;
-      align-items: center;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-      font-weight: 700;
-      letter-spacing: 0.2px;
-      color: rgba(255,255,255,0.92);
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px 0 18px;
     }
 
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
+    .pill{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow:0 20px 60px rgba(0,0,0,0.35);
+      font-weight:700;
+      letter-spacing:0.2px;
+      color:rgba(255,255,255,0.92);
+    }
+
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:999px;
       background: linear-gradient(180deg, #ff2d55, #ff6aa8);
-      box-shadow: 0 10px 30px rgba(255, 45, 85, 0.35);
+      box-shadow:0 10px 30px rgba(255,45,85,0.35);
     }
 
-    .headline {
-      text-align: center;
-      margin: 10px 0 8px;
-      font-size: clamp(32px, 6.8vw, 68px);
-      font-weight: 900;
-      letter-spacing: -0.02em;
-      line-height: 1.05;
+    .headline{
+      text-align:center;
+      margin:10px 0 8px;
+      font-size:clamp(32px,6.8vw,68px);
+      font-weight:900;
+      letter-spacing:-0.02em;
+      line-height:1.05;
     }
 
-    .subline {
-      text-align: center;
-      margin: 0 auto 22px;
-      max-width: 42ch;
-      font-size: 16px;
-      line-height: 1.45;
-      color: rgba(255,255,255,0.78);
+    .subline{
+      text-align:center;
+      margin:0 auto 22px;
+      max-width:46ch;
+      font-size:16px;
+      line-height:1.45;
+      color:rgba(255,255,255,0.78);
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 14px;
-      margin: 18px 0 18px;
+    .grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+      margin:18px 0 18px;
     }
 
-    .card {
-      position: relative;
-      border-radius: 24px;
-      overflow: hidden;
-      background: rgba(255,255,255,0.06);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+    /* Cards: no ugly borders, soft glass, overflow visible for "outside" look */
+    .card{
+      position:relative;
+      border-radius:26px;
+      overflow:visible;
+      background:rgba(255,255,255,0.06);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       box-shadow:
         0 30px 90px rgba(0,0,0,0.45),
         inset 0 1px 0 rgba(255,255,255,0.08);
+      padding: 18px 16px 16px;
     }
 
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:26px;
       background:
         radial-gradient(600px 260px at 50% 0%, rgba(255, 45, 85, 0.20), transparent 55%),
         radial-gradient(500px 240px at 15% 80%, rgba(255, 106, 168, 0.14), transparent 60%);
-      pointer-events: none;
+      pointer-events:none;
     }
 
-    .gif {
-      position: relative;
-      display: block;
+    /* GIF wrapper to control layout and create "overhang" */
+    .gif-wrap{
+      position:relative;
+      z-index:1;
+      margin: 6px auto 10px;
       width: 100%;
-      height: auto;
+      display:flex;
+      justify-content:center;
+    }
+
+    .gif{
+      display:block;
+      width:78%;
+      max-width:360px;
+      height:auto;
+      filter: drop-shadow(0 24px 60px rgba(0,0,0,0.38));
       transform: translateZ(0);
     }
 
-    .caption {
-      position: relative;
-      padding: 12px 14px 14px;
-      text-align: center;
-      font-weight: 700;
-      color: rgba(255,255,255,0.88);
-      letter-spacing: 0.2px;
+    /* Overhang left/right */
+    .grid .card:nth-child(1) .gif{
+      transform: translateX(-26px);
+    }
+    .grid .card:nth-child(2) .gif{
+      transform: translateX(26px);
     }
 
-    .final {
-      margin-top: 18px;
-      text-align: center;
-      padding: 16px 14px;
-      border-radius: 22px;
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+    .caption{
+      position:relative;
+      z-index:1;
+      text-align:center;
+      font-weight:700;
+      color:rgba(255,255,255,0.88);
+      letter-spacing:0.2px;
+      padding: 6px 10px 2px;
+    }
+
+    .final{
+      margin-top:18px;
+      text-align:center;
+      padding:16px 14px;
+      border-radius:24px;
+      background:rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       box-shadow:
         0 25px 70px rgba(0,0,0,0.40),
         inset 0 1px 0 rgba(255,255,255,0.08);
     }
 
-    .final strong {
-      display: block;
-      font-size: 18px;
-      letter-spacing: 0.1px;
-      color: rgba(255,255,255,0.92);
-      margin-bottom: 6px;
+    .final strong{
+      display:block;
+      font-size:18px;
+      letter-spacing:0.1px;
+      color:rgba(255,255,255,0.92);
+      margin-bottom:6px;
     }
 
-    .final span {
-      display: block;
-      font-size: 16px;
-      color: rgba(255,255,255,0.78);
-      line-height: 1.35;
+    .final span{
+      display:block;
+      font-size:16px;
+      color:rgba(255,255,255,0.78);
+      line-height:1.35;
     }
 
-    @media (min-width: 820px) {
-      .grid { grid-template-columns: 1fr 1fr; }
+    @media (min-width: 820px){
+      .grid{ grid-template-columns:1fr 1fr; }
+      .gif{ width:72%; max-width:360px; }
+      .grid .card:nth-child(1) .gif{ transform: translateX(-34px); }
+      .grid .card:nth-child(2) .gif{ transform: translateX(34px); }
     }
   </style>
 </head>
@@ -233,16 +258,20 @@
       </div>
 
       <div class="headline">I love you 💗</div>
-      <div class="subline">Minimal chaos. Maximum feelings. Two reactions, same conclusion.</div>
+      <div class="subline">Minimal, cute, and officially confirmed.</div>
 
       <div class="grid">
         <div class="card">
-          <img class="gif" src="cat1.gif" alt="yippee cat">
+          <div class="gif-wrap">
+            <img class="gif" src="cat1.gif" alt="yippee cat">
+          </div>
           <div class="caption">Yippee energy</div>
         </div>
 
         <div class="card">
-          <img class="gif" src="cat2.gif" alt="happy dance">
+          <div class="gif-wrap">
+            <img class="gif" src="cat2.gif" alt="happy dance">
+          </div>
           <div class="caption">Happy dance confirmation</div>
         </div>
       </div>
@@ -264,16 +293,16 @@
     let noFlex = 1;
     const shrinkStep = 0.18;
 
-    function updateFlex() {
+    function updateFlex(){
       yesBtn.style.flex = yesFlex;
       noBtn.style.flex = Math.max(0, noFlex);
     }
 
-    function shrinkNo() {
+    function shrinkNo(){
       noFlex -= shrinkStep;
       yesFlex += shrinkStep;
 
-      if (noFlex <= 0.02) {
+      if (noFlex <= 0.02){
         noBtn.style.display = "none";
         noFlex = 0;
       }
@@ -284,7 +313,7 @@
     noBtn.addEventListener("touchstart", (e) => {
       e.preventDefault();
       shrinkNo();
-    }, { passive: false });
+    }, { passive:false });
 
     yesBtn.addEventListener("click", () => {
       choice.style.display = "none";
