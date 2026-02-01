@@ -1,317 +1,216 @@
-<!doctype html>
-<html lang="de">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Valentinstag</title>
-  <style>
-    :root {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-    }
+<script>
+  const name = "Subina";
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      background: radial-gradient(circle at 30% 20%, #ffe3ec, #fff6f9);
-      color: #1b1b1b;
-    }
+  const headline = document.getElementById("headline");
+  const msg = document.getElementById("msg");
+  const hint = document.getElementById("hint");
+  const stage = document.getElementById("stage");
+  const hearts = document.getElementById("hearts");
+  const footer = document.getElementById("footer");
 
-    .card {
-      width: min(560px, calc(100vw - 32px));
-      background: rgba(255,255,255,0.88);
-      border-radius: 24px;
-      padding: 28px 22px;
-      box-shadow: 0 18px 60px rgba(0,0,0,0.12);
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
+  const yesBtn = document.getElementById("yesBtn");
+  const noBtn = document.getElementById("noBtn");
 
-    h1 {
-      margin: 0 0 10px;
-      font-size: clamp(24px, 4vw, 36px);
-      letter-spacing: 0.2px;
-    }
+  headline.textContent = `${name}, willst du mein Valentinsdate sein?`;
 
-    p {
-      margin: 0 0 18px;
-      font-size: 16px;
-      opacity: 0.85;
-    }
+  function rand(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
 
-    .stage {
-      position: relative;
-      height: 180px;
-      border-radius: 18px;
-      background: rgba(255, 227, 236, 0.55);
-      display: grid;
-      place-items: center;
-      margin-top: 14px;
-      overflow: hidden;
-    }
+  function spawnHeart() {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.textContent = "💗";
+    const rect = stage.getBoundingClientRect();
+    const x = rand(20, Math.max(20, Math.floor(rect.width - 20)));
+    const y = rand(Math.floor(rect.height * 0.55), Math.floor(rect.height * 0.75));
+    h.style.left = x + "px";
+    h.style.top = y + "px";
+    hearts.appendChild(h);
+    setTimeout(() => h.remove(), 1300);
+  }
 
-    .buttons {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    button {
-      border: 0;
-      cursor: pointer;
-      font-size: 18px;
-      padding: 12px 18px;
-      border-radius: 14px;
-      position: absolute;
-      user-select: none;
-      touch-action: manipulation;
-      box-shadow: 0 10px 24px rgba(0,0,0,0.12);
-      transition: transform 120ms ease, opacity 120ms ease;
-    }
+  function viewportBox(btnW, btnH) {
+    const pad = 8;
+    const w = Math.max(0, window.innerWidth - btnW - pad);
+    const h = Math.max(0, window.innerHeight - btnH - pad);
+    return { pad, w, h };
+  }
 
-    button:active {
-      transform: scale(0.98);
-    }
+  function setNoFixedMode() {
+    noBtn.style.position = "fixed";
+    noBtn.style.left = "12px";
+    noBtn.style.top = "12px";
+    noBtn.style.transform = "translate(0,0)";
+    noBtn.style.zIndex = "9999";
+    noBtn.style.margin = "0";
+  }
 
-    #yesBtn {
-      left: 50%;
-      top: 58%;
-      transform: translate(-110%, -50%);
-      background: #ff3b7a;
-      color: white;
-    }
+  function teleportNoRandom() {
+    if (noBtn.classList.contains("is-yes")) return;
 
-    #noBtn {
-      left: 50%;
-      top: 58%;
-      transform: translate(10%, -50%);
-      background: #ffffff;
-      color: #1b1b1b;
-      border: 2px solid rgba(0,0,0,0.12);
-      will-change: left, top, transform;
-    }
+    const rect = noBtn.getBoundingClientRect();
+    const box = viewportBox(rect.width, rect.height);
 
-    #noBtn.is-yes {
-      background: #ff3b7a;
-      color: #fff;
-      border-color: transparent;
-    }
+    const x = rand(box.pad, box.w);
+    const y = rand(box.pad, box.h);
 
-    .msg {
-      margin-top: 14px;
-      min-height: 22px;
-      font-weight: 700;
-    }
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+  }
 
-    .hint {
-      margin-top: 6px;
-      font-size: 13px;
-      opacity: 0.65;
-    }
+  let vx = 0;
+  let vy = 0;
+  let ticker = null;
 
-    .hearts {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0.5;
-    }
+  function randomVelocity() {
+    const speed = rand(18, 34);
+    const angle = Math.random() * Math.PI * 2;
+    vx = Math.cos(angle) * speed;
+    vy = Math.sin(angle) * speed;
+  }
 
-    .heart {
-      position: absolute;
-      font-size: 18px;
-      animation: floatUp 1200ms ease forwards;
-    }
+  function tick() {
+    if (noBtn.classList.contains("is-yes")) return;
 
-    @keyframes floatUp {
-      from { transform: translateY(10px); opacity: 0; }
-      20% { opacity: 1; }
-      to { transform: translateY(-80px); opacity: 0; }
-    }
+    const rect = noBtn.getBoundingClientRect();
+    const box = viewportBox(rect.width, rect.height);
 
-    .footer {
-      margin-top: 10px;
-      font-size: 12px;
-      opacity: 0.55;
-    }
-  </style>
-</head>
-<body>
-  <div class="card">
-    <h1 id="headline"></h1>
-    <p id="subline">Bitte beantworte diese komplett seriöse Frage.</p>
+    let x = rect.left + vx;
+    let y = rect.top + vy;
 
-    <div class="stage" id="stage">
-      <div class="buttons">
-        <button id="yesBtn">Ja</button>
-        <button id="noBtn">Nein</button>
-      </div>
-      <div class="hearts" id="hearts"></div>
-    </div>
+    let bounced = false;
 
-    <div class="msg" id="msg"></div>
-    <div class="hint" id="hint"></div>
-    <div class="footer" id="footer"></div>
-  </div>
+    if (x < box.pad) { x = box.pad; vx = Math.abs(vx); bounced = true; }
+    if (x > box.w)   { x = box.w;   vx = -Math.abs(vx); bounced = true; }
+    if (y < box.pad) { y = box.pad; vy = Math.abs(vy); bounced = true; }
+    if (y > box.h)   { y = box.h;   vy = -Math.abs(vy); bounced = true; }
 
-  <script>
-    const name = "Subina";
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
 
-    const headline = document.getElementById("headline");
-    const msg = document.getElementById("msg");
-    const hint = document.getElementById("hint");
-    const stage = document.getElementById("stage");
-    const hearts = document.getElementById("hearts");
-    const footer = document.getElementById("footer");
+    if (bounced && Math.random() < 0.35) randomVelocity();
+  }
 
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn = document.getElementById("noBtn");
+  function startChaos() {
+    if (prefersReducedMotion) return;
+    if (ticker) return;
 
-    headline.textContent = `${name}, willst du mein Valentinsdate sein?`;
+    randomVelocity();
+    teleportNoRandom();
 
-    function rand(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
+    ticker = setInterval(() => {
+      for (let i = 0; i < 2; i++) tick();
+    }, 16);
+  }
 
-    function clamp(v, min, max) {
-      return Math.max(min, Math.min(max, v));
-    }
+  function stopChaos() {
+    if (!ticker) return;
+    clearInterval(ticker);
+    ticker = null;
+  }
 
-    function spawnHeart() {
-      const h = document.createElement("div");
-      h.className = "heart";
-      h.textContent = "💗";
-      const rect = stage.getBoundingClientRect();
-      const x = rand(20, Math.max(20, Math.floor(rect.width - 20)));
-      const y = rand(Math.floor(rect.height * 0.55), Math.floor(rect.height * 0.75));
-      h.style.left = x + "px";
-      h.style.top = y + "px";
-      hearts.appendChild(h);
-      setTimeout(() => h.remove(), 1300);
-    }
+  function panicJumpAwayFromPoint(clientX, clientY) {
+    if (noBtn.classList.contains("is-yes")) return;
 
-    function placeNoButton(x, y) {
-      const stageRect = stage.getBoundingClientRect();
-      const btnRect = noBtn.getBoundingClientRect();
+    const rect = noBtn.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
 
-      const padding = 10;
-      const maxX = stageRect.width - btnRect.width - padding;
-      const maxY = stageRect.height - btnRect.height - padding;
+    const dx = cx - clientX;
+    const dy = cy - clientY;
+    const dist = Math.hypot(dx, dy);
 
-      const cx = clamp(x, padding, Math.max(padding, maxX));
-      const cy = clamp(y, padding, Math.max(padding, maxY));
+    const danger = 170;
+    if (dist > danger) return;
 
-      noBtn.style.left = cx + "px";
-      noBtn.style.top = cy + "px";
-      noBtn.style.transform = "translate(0, 0)";
-    }
+    teleportNoRandom();
+    randomVelocity();
+  }
 
-    function randomPlaceNoButton() {
-      const stageRect = stage.getBoundingClientRect();
-      const btnRect = noBtn.getBoundingClientRect();
+  function centerNoAndMakeYes() {
+    stopChaos();
 
-      const padding = 10;
-      const maxX = Math.max(padding, stageRect.width - btnRect.width - padding);
-      const maxY = Math.max(padding, stageRect.height - btnRect.height - padding);
+    noBtn.classList.add("is-yes");
+    noBtn.textContent = "Ja";
+    msg.textContent = "Nein hat sich korrigiert. Verständlich.";
+    hint.textContent = "Tippe auf Ja.";
 
-      placeNoButton(rand(padding, maxX), rand(padding, maxY));
-    }
+    const rect = noBtn.getBoundingClientRect();
+    const x = (window.innerWidth - rect.width) / 2;
+    const y = (window.innerHeight - rect.height) / 2;
 
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let driftTimer = null;
+    noBtn.style.left = Math.max(8, x) + "px";
+    noBtn.style.top = Math.max(8, y) + "px";
 
-    function startNoButtonDrift() {
-      if (prefersReducedMotion) return;
-      if (driftTimer) return;
+    for (let i = 0; i < 10; i++) setTimeout(spawnHeart, i * 70);
 
-      driftTimer = setInterval(() => {
-        if (noBtn.classList.contains("is-yes")) return;
-        randomPlaceNoButton();
-      }, 420);
-    }
+    const toYes = (e) => {
+      e.preventDefault();
+      yesBtn.click();
+    };
 
-    function stopNoButtonDrift() {
-      if (!driftTimer) return;
-      clearInterval(driftTimer);
-      driftTimer = null;
-    }
+    noBtn.addEventListener("click", toYes, { once: true });
+    noBtn.addEventListener("pointerup", toYes, { once: true });
+    noBtn.addEventListener("touchend", toYes, { passive: false, once: true });
+  }
 
-    function lockToCenterAsYesButton() {
-      const stageRect = stage.getBoundingClientRect();
-      const btnRect = noBtn.getBoundingClientRect();
+  function armNoButton() {
+    setNoFixedMode();
+    startChaos();
 
-      const x = (stageRect.width - btnRect.width) / 2;
-      const y = (stageRect.height - btnRect.height) / 2;
+    const caught = (e) => {
+      e.preventDefault();
+      if (noBtn.classList.contains("is-yes")) return;
+      centerNoAndMakeYes();
+    };
 
-      placeNoButton(x, y);
-    }
+    noBtn.addEventListener("pointerdown", caught);
+    noBtn.addEventListener("touchstart", caught, { passive: false });
+    noBtn.addEventListener("mousedown", caught);
 
-    function transformNoIntoYes() {
-      stopNoButtonDrift();
-
-      noBtn.classList.add("is-yes");
-      noBtn.textContent = "Ja";
-
-      msg.textContent = "Nein hat sich spontan umentschieden.";
-      hint.textContent = "Tippe auf Ja.";
-
-      for (let i = 0; i < 8; i++) setTimeout(spawnHeart, i * 80);
-
-      lockToCenterAsYesButton();
-
-      const toYes = (e) => {
-        e.preventDefault();
-        yesBtn.click();
-      };
-
-      noBtn.addEventListener("click", toYes, { once: true });
-      noBtn.addEventListener("touchend", toYes, { passive: false, once: true });
-      noBtn.addEventListener("pointerup", toYes, { once: true });
-    }
-
-    function armNoButton() {
-      randomPlaceNoButton();
-      startNoButtonDrift();
-
-      const catchAttempt = (e) => {
-        e.preventDefault();
-        if (noBtn.classList.contains("is-yes")) return;
-        transformNoIntoYes();
-      };
-
-      noBtn.addEventListener("touchstart", catchAttempt, { passive: false });
-      noBtn.addEventListener("pointerdown", catchAttempt);
-      noBtn.addEventListener("mousedown", catchAttempt);
-    }
-
-    yesBtn.addEventListener("click", () => {
-      msg.textContent = "Sehr gute Entscheidung. Speicherung im Herzen abgeschlossen.";
-      hint.textContent = "Screenshot machen und mir schicken 😌";
-      footer.textContent = "";
-
-      for (let i = 0; i < 12; i++) setTimeout(spawnHeart, i * 70);
-
-      noBtn.style.display = "none";
-      yesBtn.style.left = "50%";
-      yesBtn.style.top = "58%";
-      yesBtn.style.transform = "translate(-50%, -50%)";
+    window.addEventListener("pointermove", (e) => {
+      panicJumpAwayFromPoint(e.clientX, e.clientY);
     });
+
+    window.addEventListener("touchmove", (e) => {
+      const t = e.touches && e.touches[0];
+      if (!t) return;
+      panicJumpAwayFromPoint(t.clientX, t.clientY);
+    }, { passive: true });
 
     window.addEventListener("resize", () => {
-      if (noBtn.style.display === "none") return;
       if (noBtn.classList.contains("is-yes")) {
-        lockToCenterAsYesButton();
-      } else {
-        randomPlaceNoButton();
+        const rect = noBtn.getBoundingClientRect();
+        noBtn.style.left = Math.max(8, (window.innerWidth - rect.width) / 2) + "px";
+        noBtn.style.top = Math.max(8, (window.innerHeight - rect.height) / 2) + "px";
+        return;
       }
+      teleportNoRandom();
+      randomVelocity();
     });
+  }
 
-    msg.textContent = "";
-    hint.textContent = "Pro Tipp: Fang den Nein Button.";
+  yesBtn.addEventListener("click", () => {
+    msg.textContent = "Sehr gute Entscheidung. Speicherung im Herzen abgeschlossen.";
+    hint.textContent = "Screenshot machen und mir schicken 😌";
     footer.textContent = "";
 
-    armNoButton();
-  </script>
-</body>
-</html>
+    for (let i = 0; i < 14; i++) setTimeout(spawnHeart, i * 60);
+
+    stopChaos();
+    noBtn.style.display = "none";
+
+    yesBtn.style.left = "50%";
+    yesBtn.style.top = "58%";
+    yesBtn.style.transform = "translate(-50%, -50%)";
+  });
+
+  msg.textContent = "";
+  hint.textContent = "Pro Tipp: Fang den Nein Button. Spoiler: wirst du nicht.";
+  footer.textContent = "";
+
+  armNoButton();
+</script>
